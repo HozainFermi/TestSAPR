@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="TestSAPR.API/TestSAPR.API.csproj" />
+  <Project Path="TestSAPR.Application/TestSAPR.Application.csproj" />
+  <Project Path="TestSAPR.Domain/TestSAPR.Domain.csproj" />
+  <Project Path="TestSAPR.Infrastructure/TestSAPR.Infrastructure.csproj" />
+</Solution>
