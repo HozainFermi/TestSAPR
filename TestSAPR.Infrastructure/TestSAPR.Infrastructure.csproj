@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestSAPR.Application\TestSAPR.Application.csproj" />
+    <ProjectReference Include="..\TestSAPR.Domain\TestSAPR.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="8.5.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.7">
       <PrivateAssets>all</PrivateAssets>

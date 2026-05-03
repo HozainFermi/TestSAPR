@@ -2,28 +2,64 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using TestSAPR.Infrastructure.Entity;
 
 namespace TestSAPR.Infrastructure.ApplicationDbContext
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-
         }
 
-//        CREATE TABLE part(
-//      id UUID PRIMARY KEY,
-//      name VARCHAR(255) NOT NULL
-//);
+        public DbSet<PartEntity> Parts { get; set; }
+        public DbSet<PartStructureEntity> Structures { get; set; }
 
-//        CREATE TABLE part_structure(
-//            parent_id UUID NOT NULL,
-//            child_id UUID NOT NULL,
-//            quantity INT NOT NULL,
-//            PRIMARY KEY (parent_id, child_id),
-//            FOREIGN KEY (parent_id) REFERENCES part(id),
-//            FOREIGN KEY (child_id) REFERENCES part(id)
-//        );
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PartEntity>(entity =>
+            {
+                entity.ToTable("parts");
+
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.Name)
+                    .IsRequired();
+
+                entity.HasIndex(p => p.Name)
+                .IsUnique(true);
+                
+                entity.Property(p => p.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+            });
+
+            modelBuilder.Entity<PartStructureEntity>(entity =>
+            {
+                entity.ToTable("part_structures");
+                entity.HasKey(s => new {s.ParentId, s.ChildId });
+               
+                entity.Property(m => m.CreatedAt)
+                    .HasDefaultValueSql("GETDATE()");
+
+                entity.Property(ps => ps.Quantity).IsRequired();
+
+                entity
+                    .HasOne(ps => ps.Parent)
+                    .WithMany(p => p.ChildParts)
+                    .HasForeignKey(ps => ps.ParentId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity
+                    .HasOne(ps => ps.Child)
+                    .WithMany(p => p.ParentParts)
+                    .HasForeignKey(ps => ps.ChildId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+            });
+        }
+
     }
 }

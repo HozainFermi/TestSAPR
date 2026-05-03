@@ -1,0 +1,33 @@
+﻿@model TestSAPR.Domain.Model.Part
+
+<li style="margin-top: 5px;">
+    <div class="d-flex align-items-center">
+        @if (Model.Children != null && Model.Children.Any())
+        {
+            <button class="btn btn-sm btn-outline-secondary me-2" onclick="toggle('@Model.Id')">+</button>
+        }
+        else
+        {
+            <span class="me-2" style="width: 31px; display: inline-block;"></span>
+        }
+
+        <span><strong>@Model.Name</strong> @(Model.Quantity > 0 ? $"— {Model.Quantity} шт." : "")</span>
+
+        <div class="ms-3 opacity-50">
+            <a href="javascript:void(0)" onclick="openRenameModal('@Model.Id', '@Model.Name')" class="text-primary small">Рейнейм</a>
+            <a asp-page="Index" asp-page-handler="Delete" asp-route-id="@Model.Id" class="text-danger small" onclick="return confirm('Удалить?')">Удалить</a>
+            <a asp-page="Index" asp-page-handler="Export" asp-route-id="@Model.Id" class="text-success small">Excel</a>
+            <a href="javascript:void(0)" onclick="openAddChildModal('@Model.Id')" class="text-dark small"><b>+ Добавить вложенный</b></a>
+        </div>
+    </div>
+
+    @if (Model.Children != null && Model.Children.Any())
+    {
+        <ul id="@Model.Id" style="display: none; list-style: none;" class="ps-4 border-start">
+            @foreach (var child in Model.Children)
+            {
+                <partial name="_PartNode" model="child" />
+            }
+        </ul>
+    }
+</li>

@@ -1,3 +1,7 @@
+using OfficeOpenXml;
+using TestSAPR.Application;
+using TestSAPR.Infrastructure;
+
 namespace TestSAPR.API
 {
     public class Program
@@ -8,7 +12,10 @@ namespace TestSAPR.API
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplicationServices(builder.Configuration);
 
+            ExcelPackage.License.SetNonCommercialPersonal("Тестовое Задание");
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -19,7 +26,7 @@ namespace TestSAPR.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

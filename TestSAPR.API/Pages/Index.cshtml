@@ -1,10 +1,102 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Дерево компонентов";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <h2>Состав изделий</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <div asp-validation-summary="All"></div>
+        </div>
+    }
+
+    <div class="card p-3 mb-4">
+        <h5>Создать новый компонент</h5>
+        <form method="post" asp-page-handler="Create">
+            <div class="input-group">
+                <input name="Name" class="form-control" placeholder="Название" required />
+                <button class="btn btn-primary">Создать</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card p-3">
+        <h5>Иерархия</h5>
+        <ul class="ps-0">
+            @foreach (var part in Model.Parts)
+            {
+                <partial name="_PartNode" model="part" />
+            }
+        </ul>
+    </div>
 </div>
+
+
+<div class="modal fade" id="renameModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="Rename">
+            <div class="modal-content">
+                <div class="modal-header"><h5>Переименовать деталь</h5></div>
+                <div class="modal-body">
+                    <input type="hidden" name="part_id" id="renameId" />
+                    <label>Новое название:</label>
+                    <input type="text" name="new_name" id="renameName" class="form-control" required />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addChildModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="post" asp-page-handler="AddChild">
+            <div class="modal-content">
+                <div class="modal-header"><h5>Добавить вложенный элемент</h5></div>
+                <div class="modal-body">
+                    <input type="hidden" name="parent_id" id="parentId" />
+                    
+                    <label>Введите название детали:</label>
+                    <input type="text" name="child_name" id="childName" class="form-control" required />
+                    <label class="mt-3">Количество:</label>
+                    <input type="number" name="quantity" class="form-control" value="1" min="1" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-success">Добавить</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    function toggle(id) {
+        let el = document.getElementById(id);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+      function openRenameModal(id, currentName) {
+        document.getElementById('renameId').value = id;
+        document.getElementById('renameName').value = currentName;
+        var modal = new bootstrap.Modal(document.getElementById('renameModal'));
+        modal.show();
+    }
+
+    function openAddChildModal(parentId) {
+        document.getElementById('parentId').value = parentId;
+        var modal = new bootstrap.Modal(document.getElementById('addChildModal'));
+        modal.show();
+    }
+
+</script>
+
